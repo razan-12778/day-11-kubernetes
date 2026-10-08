@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: style-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: style
+
+  template:
+    metadata:
+      labels:
+        app: style
+    spec:
+      volumes:
+      - name: shared-data
+        emptyDir: {}
+
+      containers:
+        - image: europe-west1-docker.pkg.dev/data-engineering-students/student-images/style-frontend-sidecar
+          name: frontend
+          ports:
+            - name: fe-port
+              containerPort: 8501
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          volumeMounts:
+            - mountPath: /storage
+              name: shared-data
+          args: ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+        - image: europe-west1-docker.pkg.dev/data-engineering-students/student-images/style-backend
+          name: backend
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          volumeMounts:
+            - mountPath: /storage
+              name: shared-data

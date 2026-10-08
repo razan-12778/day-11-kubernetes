@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: counter-service
+  namespace: default
+spec:
+  selector:
+    app: counter
+  type: LoadBalancer # Change this
+  sessionAffinity: None # You would change this if users leave and come back
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  ports:
+    - name: service-port
+      protocol: TCP
+      port: 5000
+      targetPort: counter-port
+      # If you set the `spec.type` field to `NodePort` and you want a specific port number,
+      # you can specify a value in the `spec.ports[*].nodePort` field.
+      # nodePort:

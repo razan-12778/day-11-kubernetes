@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: streamlit-deployment
+
+spec:
+  replicas: 4
+
+  selector:
+    matchLabels:
+      app: streamlit
+
+  template:
+    metadata:
+      labels:
+        app: streamlit
+
+    spec:
+      containers:
+        - name: streamlit-container
+          image: europe-west1-docker.pkg.dev/data-engineering-students/student-images/streamlit-f1:0.1
+          imagePullPolicy: IfNotPresent
+
+          volumeMounts:
+            - mountPath: /app/.streamlit
+              name: streamlit-secrets
+              readOnly: true
+
+          ports:
+            - containerPort: 8501
+
+          args:
+            - streamlit
+            - run
+            - f1dashboard/advanced.py
+            - --server.address=0.0.0.0
+
+      volumes:
+        - name: streamlit-secrets
+          secret:
+            secretName: streamlit-secrets
+
+      restartPolicy: Always

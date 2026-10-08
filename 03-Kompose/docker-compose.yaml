@@ -1,0 +1,13 @@
+services:
+  frontend:
+    image: europe-west1-docker.pkg.dev/data-engineering-students/student-images/style-frontend
+    ports:
+      - 8501:8501
+    depends_on:
+      - backend
+    volumes:
+        - /tmp/storage:/storage
+  backend:
+    image: europe-west1-docker.pkg.dev/data-engineering-students/student-images/style-backend
+    volumes:
+      - /tmp/storage:/storage

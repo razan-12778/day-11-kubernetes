@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counter
+  namespace: default
+  labels:
+    app: counter
+spec:
+  selector:
+    matchLabels:
+      app: counter
+  replicas: 4 # controls the number of pods created / node
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: counter
+    spec:
+      # initContainers:
+      # Init containers are exactly like regular containers, except:
+      # - Init containers always run to completion.
+      # - Each init container must complete successfully before the next one starts.
+      containers:
+        - name: counter
+          image: europe-west1-docker.pkg.dev/data-engineering-students/student-images/k8s-lecture-app:dev
+
+          # Local Images
+          # image: image-name
+          # imagePullPolicy: Never
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          livenessProbe: # sort of a health check - to see if the container is still working
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+            periodSeconds: 10
+          readinessProbe: # Sort of like a health check - whether the pod is ready to receive a connection
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+            periodSeconds: 10
+          # env:
+          # - name: DB_HOST
+          #   valueFrom:
+          #     configMapKeyRef:
+          #       name: counter
+          #       key: DB_HOST
+          ports:
+            # The port that our app is running on INSIDE the container
+            - containerPort: 8080
+              name: counter-port
+
+          # Volumes Section
+          # The volume is mounted to each container (of this definition) in each pod
+          # volumeMounts:
+          #   - name: counter-volume
+          #     mountPath: /app/pv-data
+
+      # Outside the definition of a single container
+      # Available to the overall deployment
+      # volumes:
+      #   - name: counter-volume
+      #     persistentVolumeClaim:
+      #       claimName: counter-claim
+      # restartPolicy: Always

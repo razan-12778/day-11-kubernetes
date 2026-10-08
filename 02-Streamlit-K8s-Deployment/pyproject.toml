@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "k8s-f1"
+version = "0.1.0"
+description = ""
+authors = ["S. Saunier <seb@lewagon.org>"]
+packages = [{include = "f1dashboard"}]
+
+[tool.poetry.dependencies]
+python = "~3.12.8"
+sqlalchemy = "^2.0.36"
+psycopg2-binary = "^2.9.10"
+matplotlib = "^3.10.0"
+plotly = "^5.24.1"
+streamlit = "^1.41.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+ipykernel = "^6.29.5"
+notebook = "^7.3.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+markers = ["optional: not required, nor saved in test_output.txt"]

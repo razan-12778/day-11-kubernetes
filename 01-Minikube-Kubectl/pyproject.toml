@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "01-minikube-kubectl"
+version = "0.1.0"
+description = ""
+authors = ["Oliver Giles <oliver.giles@lewagon.com>"]
+packages = [{include = "api"}]
+
+[tool.poetry.dependencies]
+python = "~3.12.8"
+fastapi = "^0.115.6"
+uvicorn = "^0.34.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+black = "^26.5.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
